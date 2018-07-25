@@ -602,6 +602,10 @@ static int pdiscovery_get_info(const char * port, const struct pdiscovery_reques
 		unsigned want_imsi = req->imsi && res->imsi == NULL;		// 1 && 1
 		unsigned cmd = want_map[want_imei][want_imsi];
 
+		write_all(fd, "ATE0\r\n", 6);
+		int timeout = PDISCOVERY_TIMEOUT;
+		at_wait(fd, &timeout);
+
 		/* clean queue first ? */
 		fail = pdiscovery_do_cmd(req, fd, port, cmds[cmd].cmd, cmds[cmd].length, res);
 		closetty(fd, &lock_file);
